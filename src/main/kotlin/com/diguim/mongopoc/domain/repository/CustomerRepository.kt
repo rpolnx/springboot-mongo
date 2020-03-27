@@ -6,4 +6,4 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface CustomerRepository : MongoRepository<Customer, UUID>
+interface CustomerRepository : MongoRepository<Customer, String>

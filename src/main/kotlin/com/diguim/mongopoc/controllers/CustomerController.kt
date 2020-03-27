@@ -1,6 +1,7 @@
 package com.diguim.mongopoc.controllers
 
 import com.diguim.mongopoc.domain.dto.CustomerDTO
+import com.diguim.mongopoc.domain.dto.CustomerDTOPatch
 import com.diguim.mongopoc.services.CustomerService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.*
@@ -28,6 +29,12 @@ class CustomerController(@Autowired val customerService: CustomerService) {
     @ResponseStatus(NO_CONTENT)
     fun update(@PathVariable("id") id: UUID, @Valid @RequestBody dto: CustomerDTO) {
         customerService.update(id, dto)
+    }
+
+    @PatchMapping("{id}")
+    @ResponseStatus(NO_CONTENT)
+    fun updateNameOrBirthday(@PathVariable("id") id: UUID, @Valid @RequestBody dto: CustomerDTOPatch) {
+        customerService.updateNameOrBirthday(id, dto)
     }
 
     @DeleteMapping("{id}")

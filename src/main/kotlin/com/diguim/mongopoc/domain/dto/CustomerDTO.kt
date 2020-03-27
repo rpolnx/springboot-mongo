@@ -23,3 +23,10 @@ class CustomerDTOCreate(val id: UUID) {
         fun of(customer: Customer): CustomerDTOCreate = CustomerDTOCreate(UUID.fromString(customer.id))
     }
 }
+
+class CustomerDTOPatch(val name: String?,
+                       val birthday: LocalDate?) {
+    companion object {
+        fun of(customer: Customer): CustomerDTOCreate = CustomerDTOCreate(UUID.fromString(customer.id))
+    }
+}

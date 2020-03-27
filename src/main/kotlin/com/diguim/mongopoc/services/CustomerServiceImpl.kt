@@ -3,6 +3,7 @@ package com.diguim.mongopoc.services
 import com.diguim.mongopoc.commons.exceptions.NotFoundException
 import com.diguim.mongopoc.domain.dto.CustomerDTO
 import com.diguim.mongopoc.domain.dto.CustomerDTOCreate
+import com.diguim.mongopoc.domain.dto.CustomerDTOPatch
 import com.diguim.mongopoc.domain.repository.CustomerRepository
 import com.diguim.mongopoc.domain.repository.data.Customer
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,7 +19,7 @@ class CustomerServiceImpl(@Autowired val customerRepository: CustomerRepository)
     }
 
     override fun getSingle(id: UUID): CustomerDTO {
-        return customerRepository.findById(id)
+        return customerRepository.findById(id.toString())
                 .map { CustomerDTO.of(it) }
                 .orElseThrow { throw NotFoundException("Customer Not Found") }
     }
@@ -28,12 +29,25 @@ class CustomerServiceImpl(@Autowired val customerRepository: CustomerRepository)
                 .let { CustomerDTOCreate.of(customerRepository.save(it)) }
     }
 
+    override fun updateNameOrBirthday(id: UUID, dto: CustomerDTOPatch) {
+        customerRepository.findById(id.toString())
+                .map { it }
+                .orElseThrow { throw NotFoundException("Customer Not Found") }
+                .also { updateNameOrBirthday(it, dto) }
+    }
+
     override fun update(id: UUID, data: CustomerDTO) {
         Customer(id = id.toString(), name = data.name, cpf = data.cpf, birthday = data.birthday)
                 .also { customerRepository.save(it) }
     }
 
     override fun delete(id: UUID) {
-        customerRepository.deleteById(id);
+        customerRepository.deleteById(id.toString());
+    }
+
+    private fun updateNameOrBirthday(customer: Customer, dto: CustomerDTOPatch) {
+        customer
+                .let { Customer(it.id, dto.name ?: it.name, it.cpf, dto.birthday ?: it.birthday) }
+                .also { customerRepository.save(it) }
     }
 }
