@@ -6,8 +6,8 @@ import java.time.LocalDate
 import java.util.*
 
 @Document(collection = "customer")
-data class Customer(@Id val id: UUID = UUID.randomUUID(),
-                    val name: String,
-                    val cpf: String?,
+data class Customer(@Id val id: String = UUID.randomUUID().toString(),
+                    val name: String?,
+                    val cpf: String,
                     val birthday: LocalDate?) : BaseEntity() {
 }
