@@ -14,11 +14,11 @@ class CustomerController(@Autowired val customerService: CustomerService) {
 
     @GetMapping
     @ResponseStatus(OK)
-    fun getAll(): List<CustomerDTO> = customerService.getAllCustomers()
+    fun getAll(): List<CustomerDTO> = customerService.getAll()
 
     @GetMapping("{id}")
     @ResponseStatus(OK)
-    fun getSingle(@PathVariable("id") id: UUID): CustomerDTO = customerService.getSingleCustomer(id)
+    fun getSingle(@PathVariable("id") id: UUID): CustomerDTO = customerService.getSingle(id)
 
     @PostMapping
     @ResponseStatus(CREATED)
@@ -26,7 +26,7 @@ class CustomerController(@Autowired val customerService: CustomerService) {
 
     @PutMapping("{id}")
     @ResponseStatus(NO_CONTENT)
-    fun update(@Valid @PathVariable("id") id: UUID, @Valid @RequestBody dto: CustomerDTO) {
+    fun update(@PathVariable("id") id: UUID, @Valid @RequestBody dto: CustomerDTO) {
         customerService.update(id, dto)
     }
 

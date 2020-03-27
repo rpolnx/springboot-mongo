@@ -10,30 +10,30 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class CustomerService(@Autowired val customerRepository: CustomerRepository) {
+class CustomerServiceImpl(@Autowired val customerRepository: CustomerRepository) : CustomerService {
 
-    fun getAll(): List<CustomerDTO> {
+    override fun getAll(): List<CustomerDTO> {
         return customerRepository.findAll()
                 .map { CustomerDTO.of(it) }
     }
 
-    fun getSingle(id: UUID): CustomerDTO {
+    override fun getSingle(id: UUID): CustomerDTO {
         return customerRepository.findById(id)
                 .map { CustomerDTO.of(it) }
                 .orElseThrow { throw NotFoundException("Customer Not Found") }
     }
 
-    fun create(data: CustomerDTO): CustomerDTOCreate {
+    override fun create(data: CustomerDTO): CustomerDTOCreate {
         return Customer(name = data.name, cpf = data.cpf, birthday = data.birthday)
                 .let { CustomerDTOCreate.of(customerRepository.save(it)) }
     }
 
-    fun update(id: UUID, data: CustomerDTO) {
-        Customer(id = id, name = data.name, cpf = data.cpf, birthday = data.birthday)
+    override fun update(id: UUID, data: CustomerDTO) {
+        Customer(id = id.toString(), name = data.name, cpf = data.cpf, birthday = data.birthday)
                 .also { customerRepository.save(it) }
     }
 
-    fun delete(id: UUID) {
+    override fun delete(id: UUID) {
         customerRepository.deleteById(id);
     }
 }
