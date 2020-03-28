@@ -6,6 +6,8 @@ import com.diguim.mongopoc.domain.dto.CustomerDTOCreate
 import com.diguim.mongopoc.domain.dto.CustomerDTOPatch
 import com.diguim.mongopoc.domain.repository.CustomerRepository
 import com.diguim.mongopoc.domain.repository.data.Customer
+import com.diguim.mongopoc.ext.toCreatedResponse
+import com.diguim.mongopoc.ext.toResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
@@ -15,18 +17,19 @@ class CustomerServiceImpl(@Autowired val customerRepository: CustomerRepository)
 
     override fun getAll(): List<CustomerDTO> {
         return customerRepository.findAll()
-                .map { CustomerDTO.of(it) }
+                .map { it.toResponse() }
     }
 
     override fun getSingle(id: UUID): CustomerDTO {
         return customerRepository.findById(id.toString())
-                .map { CustomerDTO.of(it) }
+                .map { it.toResponse() }
                 .orElseThrow { throw NotFoundException("Customer Not Found") }
     }
 
     override fun create(data: CustomerDTO): CustomerDTOCreate {
         return Customer(name = data.name, cpf = data.cpf, birthday = data.birthday)
-                .let { CustomerDTOCreate.of(customerRepository.save(it)) }
+                .let { customerRepository.save(it) }
+                .toCreatedResponse()
     }
 
     override fun updateNameOrBirthday(id: UUID, dto: CustomerDTOPatch) {
